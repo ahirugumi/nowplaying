@@ -3,17 +3,26 @@
 from mastodon import Mastodon
 import appscript
 import time, os
-import json
+import sys
+
+def getArtistDirectory(artist):
+    # iTurnesは、アーティスト名の最後に.があると_のパスになる
+    # ただし、ディレクトリだけ。
+    artistDirectory=artist
+    if (artistDirectory.endswith('.')):
+        artistDirectory = artist.rstrip('.') + '_'
+    return artistDirectory
 
 def getAlbumNameAndAlbumDirectory(album):
     # iTurnesは、アルバム名の最後に.があると_のパスになる
     albumDirectory=album
     if (albumDirectory.endswith('.')):
         albumDirectory = album.rstrip('.') + '_'
-    # iTurnesは、アルバム名に/があると_のパスになる
+    # iTurnesは、アルバム名に/ or :があると_のパスになる
     albumDirectory = albumDirectory.replace('/', '_')
+    albumDirectory = albumDirectory.replace(':', '_')
     albumName = album.replace('/', '_')
-    print(albumName, albumDirectory)
+    # print(albumName, albumDirectory)
     return (albumName, albumDirectory)
 
 def getArtworkFile(current, album, artist):
@@ -22,7 +31,8 @@ def getArtworkFile(current, album, artist):
     basePath = '/Volumes/MyHDD2/iTunes/Music/'
     # アートワークのファイル名を形成
     albumName, albumDirectory = getAlbumNameAndAlbumDirectory(album)
-    imagePath = basePath + artist + '/' + albumDirectory + '/' + artist + '-' + albumName
+    artistDirectory = getArtistDirectory(artist)
+    imagePath = basePath + artistDirectory + '/' + albumDirectory + '/' + artist + '-' + albumName
     return imagePath
 
 def getMediaType(artworkFile):
@@ -49,11 +59,18 @@ def getMusicData(now):
     artist = now.artist.get()
     return (current, album, artist)
 
+# iTunesから今再生中の音楽ファイルの情報を取得する
+itunes = appscript.app('iTunes', hide=True)
+# iTunesが再生中かどうかチェックする
+try:
+    tryExists=itunes.current_track.name.get()
+except appscript.reference.CommandError:
+    print('Error: iTunes not playing! ')
+    sys.exit()
+
 # Mastodonにログイン
 client = Mastodon(client_id="credential.txt", access_token="login.txt", api_base_url = "https://mstdn.jp")
 
-# iTunesから今再生中の音楽ファイルの情報を取得する
-itunes = appscript.app('iTunes')
 # 次の曲は、初回は初期化しておく
 prev = ''
 current, album, artist = getMusicData(itunes.current_track)
