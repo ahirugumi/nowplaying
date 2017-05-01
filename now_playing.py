@@ -21,6 +21,7 @@ def getAlbumNameAndAlbumDirectory(album):
     # iTurnesは、アルバム名に/ or :があると_のパスになる
     albumDirectory = albumDirectory.replace('/', '_')
     albumDirectory = albumDirectory.replace(':', '_')
+    albumDirectory = albumDirectory.replace('?', '_')
     albumName = album.replace('/', '_')
     # print(albumName, albumDirectory)
     return (albumName, albumDirectory)

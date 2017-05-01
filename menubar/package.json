@@ -1,0 +1,22 @@
+{
+  "name": "electron",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard",
+    "start": "electron .",
+    "build": "electron-packager . TryElectron --platform=darwin --arch=x64 --version=0.31.0 --ignore='node_modules/(electron-packager|electron-prebuilt)'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "menubar": "^5.2.3"
+  },
+  "devDependencies": {
+    "electron-packager": "^8.6.0",
+    "electron-prebuilt": "^1.4.13",
+    "standard": "^10.0.2"
+  }
+}

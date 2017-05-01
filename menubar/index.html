@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mastodon Nowplaying</title>
+  </head>
+  <body>
+    <h1>Mstodon Nowplaying</h1>
+    Nowplaying: <input class="hoge.js"/>
+    We are using io.js <script>document.write(process.version)</script>
+    and Electron <script>document.write(process.versions['electron'])</script>.
+
+    <hr>
+      <textarea rows="20" cols="90" id="droid-output" disabled="true"></textarea>
+    <hr>
+
+    <script src="./gui-funct.js"></script>
+    <script>
+        // GLUE to the screen
+        function getDroidOutput() { return document.getElementById("droid-output");  };
+        function getStatus()      { return document.getElementById("status");  };
+        // End of GLUE
+        backgroundProcess();
+    </script>
+  </body>
+</html>
