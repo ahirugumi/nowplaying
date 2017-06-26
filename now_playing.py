@@ -10,7 +10,7 @@ def getArtistDirectory(artist):
     # ただし、ディレクトリだけ。
     artistDirectory=artist
     if (artistDirectory.endswith('.')):
-        artistDirectory = artist.rstrip('.') + '_'
+       artistDirectory = artist.rstrip('.') + '_'
     return artistDirectory
 
 def getAlbumNameAndAlbumDirectory(album):
@@ -21,7 +21,7 @@ def getAlbumNameAndAlbumDirectory(album):
     # iTurnesは、アルバム名に/ or :があると_のパスになる
     albumDirectory = albumDirectory.replace('/', '_')
     albumDirectory = albumDirectory.replace(':', '_')
-    albumDirectory = albumDirectory.replace('?', '_')
+    # albumDirectory = albumDirectory.replace('?', '_')
     albumName = album.replace('/', '_')
     # print(albumName, albumDirectory)
     return (albumName, albumDirectory)
@@ -32,6 +32,7 @@ def getArtworkFile(current, album, artist):
     basePath = '/Volumes/MyHDD2/iTunes/Music/'
     # アートワークのファイル名を形成
     albumName, albumDirectory = getAlbumNameAndAlbumDirectory(album)
+    artist= artist.replace('Various Artists', 'Compilations')
     artistDirectory = getArtistDirectory(artist)
     imagePath = basePath + artistDirectory + '/' + albumDirectory + '/' + artist + '-' + albumName
     return imagePath
@@ -69,9 +70,6 @@ except appscript.reference.CommandError:
     print('Error: iTunes not playing! ')
     sys.exit()
 
-# Mastodonにログイン
-client = Mastodon(client_id="credential.txt", access_token="login.txt", api_base_url = "https://mstdn.jp")
-
 # 次の曲は、初回は初期化しておく
 prev = ''
 current, album, artist = getMusicData(itunes.current_track)
@@ -92,6 +90,9 @@ while(True):
         # アートワークのフルパスを取得
         artworkFullPath = getArtWorkFullPath(artworkFile, mediaType)
         print('Artwork file full path: ' + artworkFullPath)
+
+        # Mastodonにログイン
+        client = Mastodon(client_id="credential.txt", access_token="login.txt", api_base_url = "https://mstdn.jp")
 
         # Mastodonにトゥートする
         text = u"\n\n{} - {} - {}\n\n#nowplaying #metal #songinfo #なうぷれ".format(artist, album, current)
